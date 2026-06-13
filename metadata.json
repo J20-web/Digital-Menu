@@ -1,0 +1,6 @@
+{
+  "name": "Wow Burger Digital Menu",
+  "description": "A elegant, mobile-first digital menu for Wow Burger in Sabiyan, Dire Dawa, featuring specialty burgers, sides, drinks, and detailed ingredient profiles.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
