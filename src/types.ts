@@ -6,6 +6,7 @@ export interface MenuItem {
   ingredients: string[];
   price: number; // in ETB
   image: string;
+  isAvailable: boolean;
   isPopular?: boolean;
   calories?: string;
   prepTime?: string;
@@ -13,7 +14,7 @@ export interface MenuItem {
   isVegetarian?: boolean;
 }
 
-export type Category = 'burgers' | 'sides' | 'drinks' | 'desserts';
+export type Category = string;
 
 export interface CategoryInfo {
   id: Category;

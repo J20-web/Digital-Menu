@@ -11,9 +11,9 @@ interface ItemCardProps {
 export default function ItemCard({ item, onClick }: ItemCardProps) {
   return (
     <motion.div
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      whileHover={item.isAvailable ? { y: -4, transition: { duration: 0.2 } } : {}}
       onClick={onClick}
-      className="bg-white rounded-2xl overflow-hidden border border-brand-light shadow-xs hover:shadow-md transition-shadow cursor-pointer flex flex-col group relative"
+      className={`bg-white rounded-2xl overflow-hidden border border-brand-light shadow-xs hover:shadow-md transition-shadow cursor-pointer flex flex-col group relative ${!item.isAvailable ? 'opacity-75' : ''}`}
       id={`menu-card-${item.id}`}
     >
       {/* Upper Thumbnail Section with Floating Badges */}
@@ -21,15 +21,29 @@ export default function ItemCard({ item, onClick }: ItemCardProps) {
         <img
           src={item.image}
           alt={item.name}
-          className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500 ease-out"
+          className={`w-full h-full object-cover transition-transform duration-500 ease-out ${item.isAvailable ? 'group-hover:scale-102' : ''}`}
           referrerPolicy="no-referrer"
         />
         
         {/* Shadow overlays for styling depth */}
         <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/30 via-transparent to-transparent opacity-50" />
 
+        {/* Sold Out Overlay */}
+        {!item.isAvailable && (
+          <div className="absolute inset-0 bg-brand-dark/40 backdrop-blur-[1px] flex items-center justify-center z-20">
+            <span className="px-3 py-1.5 bg-brand-dark/95 text-white border border-brand-light/20 text-xs font-black uppercase tracking-widest rounded-md shadow-lg">
+              Sold Out
+            </span>
+          </div>
+        )}
+
         {/* Floating Category/Status Tags */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
+          {!item.isAvailable && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[9px] font-bold bg-brand-dark/90 text-white tracking-wider uppercase shadow-xs">
+              🚫 Unavailable
+            </span>
+          )}
           {item.isPopular && (
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[9px] font-bold bg-brand-primary text-white tracking-wider uppercase shadow-xs">
               <Flame className="w-3 h-3" /> Popular

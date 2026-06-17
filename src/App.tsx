@@ -3,12 +3,16 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ItemCard from './components/ItemCard';
 import ItemDetail from './components/ItemDetail';
-import { MENU_ITEMS, CATEGORIES, RESTAURANT_INFO } from './data';
+import AdminPanel from './components/AdminPanel';
+import AdminLogin from './components/AdminLogin';
+import { useMenu } from './context/MenuContext';
 import { MenuItem, Category } from './types';
 import { Search, RotateCcw, Sparkles, SlidersHorizontal, MapPin, Grid, Flame, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
+  const { menuItems: MENU_ITEMS, categories: CATEGORIES, restaurantInfo: RESTAURANT_INFO, isAdmin, isAuthenticated } = useMenu();
+
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
@@ -72,8 +76,15 @@ export default function App() {
       <Header />
 
       <main className="max-w-6xl mx-auto px-4 py-6 md:py-8 flex-grow w-full space-y-8" id="menu-lobby">
-        
-        {/* Editorial Splash Poster Hero Area */}
+        {isAdmin ? (
+          isAuthenticated ? (
+            <AdminPanel />
+          ) : (
+            <AdminLogin />
+          )
+        ) : (
+          <>
+            {/* Editorial Splash Poster Hero Area */}
         <div className="relative rounded-3xl overflow-hidden shadow-xs border border-brand-light bg-brand-dark text-white" id="hero-banner">
           {/* Background image overlay */}
           <div className="absolute inset-0 z-0">
@@ -298,7 +309,8 @@ export default function App() {
             </motion.div>
           )}
         </div>
-
+          </>
+        )}
       </main>
 
       {/* Pop-up detailed item overlay sheet */}

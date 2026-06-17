@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Wow Burger Digital Menu Schema",
+  "description": "Standardized JSON Schema for Wow Burger's digital menu system to support dynamic cards, multiple categories, and item availability.",
+  "type": "object",
+  "required": ["restaurant", "categories", "items"],
+  "properties": {
+    "restaurant": {
+      "type": "object",
+      "required": ["name", "tagline", "location", "placeDetail", "phone", "workingHours"],
+      "properties": {
+        "name": { "type": "string", "example": "Wow Burger" },
+        "tagline": { "type": "string", "example": "Savor the WOW factor in every single bite." },
+        "location": { "type": "string", "example": "Sabiyan, Dire Dawa, Ethiopia" },
+        "placeDetail": { "type": "string" },
+        "phone": { "type": "string", "pattern": "^\\+?[0-9\\s]{10,15}$" },
+        "workingHours": { "type": "string" }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "icon", "description"],
+        "properties": {
+          "id": { "type": "string", "enum": ["food", "coffee", "drinks", "desserts"] },
+          "name": { "type": "string" },
+          "icon": { "type": "string", "description": "Single emoji used as visual category icon" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "category", "description", "ingredients", "price", "image", "isAvailable"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "name": { "type": "string" },
+          "category": { "type": "string", "enum": ["food", "coffee", "drinks", "desserts"] },
+          "description": { "type": "string" },
+          "ingredients": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "price": { "type": "number", "minimum": 0, "description": "Price in Ethiopian Birr (ETB)" },
+          "image": { "type": "string", "format": "uri-reference" },
+          "isAvailable": { "type": "boolean", "default": true, "description": "Whether the item is currently in stock and can be ordered" },
+          "isPopular": { "type": "boolean" },
+          "isSpicy": { "type": "boolean" },
+          "isVegetarian": { "type": "boolean" },
+          "calories": { "type": "string" },
+          "prepTime": { "type": "string" }
+        }
+      }
+    }
+  }
+}

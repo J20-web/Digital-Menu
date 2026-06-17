@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { MenuItem } from '../types';
 import { X, Phone, Clock, Flame, ShieldAlert, CheckCircle, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { RESTAURANT_INFO } from '../data';
+import { useMenu } from '../context/MenuContext';
 
 interface ItemDetailProps {
   item: MenuItem | null;
@@ -10,6 +10,8 @@ interface ItemDetailProps {
 }
 
 export default function ItemDetail({ item, onClose }: ItemDetailProps) {
+  const { restaurantInfo } = useMenu();
+
   // Prevent body scrolling when the overlay is active
   useEffect(() => {
     if (item) {
@@ -72,8 +74,23 @@ export default function ItemDetail({ item, onClose }: ItemDetailProps) {
               {/* Image Shadow Edge Gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
               
+              {/* Sold Out Banner Over Image detail block */}
+              {!item.isAvailable && (
+                <div className="absolute inset-0 bg-brand-dark/50 backdrop-blur-xs flex flex-col items-center justify-center z-10 p-4">
+                  <span className="px-4 py-2 bg-brand-dark/95 text-white border border-[#c62828]/30 text-xs font-black uppercase tracking-widest rounded-lg shadow-md">
+                    Temporarily Sold Out
+                  </span>
+                  <p className="text-[10px] text-brand-cream/90 font-semibold mt-1">Coming back fresh soon!</p>
+                </div>
+              )}
+
               {/* Mini Dietary Tags inside Banner */}
               <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
+                {!item.isAvailable && (
+                  <span className="flex items-center gap-1 px-3 py-1 bg-brand-dark text-white rounded-md text-xs font-bold shadow-xs uppercase tracking-wider">
+                    🚫 Sold Out
+                  </span>
+                )}
                 {item.isPopular && (
                   <span className="flex items-center gap-1 px-3 py-1 bg-brand-primary text-white rounded-md text-xs font-bold shadow-xs uppercase tracking-wider">
                     <Flame className="w-3.5 h-3.5" /> Popular Choice
@@ -97,6 +114,11 @@ export default function ItemDetail({ item, onClose }: ItemDetailProps) {
               
               {/* Title & Price Header */}
               <div className="border-b border-brand-light pb-4">
+                {!item.isAvailable && (
+                  <span className="inline-flex px-2 py-0.5 rounded bg-[#c62828]/10 text-[#c62828] border border-[#c62828]/20 text-[9px] font-extrabold uppercase tracking-widest mb-2">
+                    Item Unavailable Today
+                  </span>
+                )}
                 <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
                   <h2 className="text-2xl sm:text-3xl font-serif font-black text-brand-dark leading-tight">
                     {item.name}
@@ -156,21 +178,33 @@ export default function ItemDetail({ item, onClose }: ItemDetailProps) {
                 <div className="space-y-1">
                   <div className="flex items-center gap-1.5 text-xs text-brand-muted">
                     <ShieldAlert className="w-4 h-4 text-brand-primary" />
-                    <span className="font-bold text-brand-dark">Ready to Savor?</span>
+                    <span className="font-bold text-brand-dark">
+                      {item.isAvailable ? 'Ready to Savor?' : 'Daily Batch Sold Out'}
+                    </span>
                   </div>
                   <p className="text-[11px] text-brand-muted leading-normal max-w-md">
-                    This is a digital menu showcase. Feel free to call directly to order for pickup or quick delivery at Sabiyan!
+                    {item.isAvailable 
+                      ? 'This is a digital menu showcase. Feel free to call directly to order for pickup or quick delivery at Sabiyan!'
+                      : 'This item is temporarily unavailable today. Our organic ingredients are delivered fresh daily and we have run out of stock for this recipe. We apologize for the inconvenience!'}
                   </p>
                 </div>
                 
-                {/* Phone Link Call Button */}
-                <a
-                  href={`tel:${RESTAURANT_INFO.phone.replace(/\s+/g, '')}`}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-brand-primary hover:bg-brand-dark text-white rounded-lg text-xs font-bold shadow-xs transition-colors cursor-pointer"
-                >
-                  <Phone className="w-3.5 h-3.5 text-brand-light" />
-                  <span>Call {RESTAURANT_INFO.phone}</span>
-                </a>
+                {/* Phone Link Call Button or Sold Out indicator */}
+                {item.isAvailable ? (
+                  <a
+                    href={`tel:${restaurantInfo.phone.replace(/\s+/g, '')}`}
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-brand-primary hover:bg-brand-dark text-white rounded-lg text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-brand-light" />
+                    <span>Call {restaurantInfo.phone}</span>
+                  </a>
+                ) : (
+                  <div
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 border border-gray-200 text-gray-500 rounded-lg text-xs font-bold cursor-not-allowed select-none"
+                  >
+                    <span>Temporarily Out</span>
+                  </div>
+                )}
               </div>
 
               {/* Close Button at bottom of details for fluent scrolling */}

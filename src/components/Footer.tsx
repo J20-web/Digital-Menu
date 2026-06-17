@@ -1,8 +1,9 @@
 import React from 'react';
 import { Phone, MapPin, Clock, Heart } from 'lucide-react';
-import { RESTAURANT_INFO } from '../data';
+import { useMenu } from '../context/MenuContext';
 
 export default function Footer() {
+  const { restaurantInfo: RESTAURANT_INFO } = useMenu();
   return (
     <footer className="bg-brand-primary text-brand-light py-10 px-4 mt-16 border-t-2 border-brand-dark" id="footer-section">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">

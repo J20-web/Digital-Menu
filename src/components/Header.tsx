@@ -1,9 +1,10 @@
 import React from 'react';
-import { Phone, MapPin, Clock, Share2, Award } from 'lucide-react';
-import { RESTAURANT_INFO } from '../data';
+import { Phone, MapPin, Clock, Share2, Award, ShieldAlert, User, ShieldCheck, LayoutGrid } from 'lucide-react';
+import { useMenu } from '../context/MenuContext';
 import { motion } from 'motion/react';
 
 export default function Header() {
+  const { restaurantInfo: RESTAURANT_INFO, isAdmin, setIsAdmin } = useMenu();
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -97,6 +98,20 @@ export default function Header() {
             >
               <Share2 className="w-4 h-4" />
             </button>
+
+            {/* Admin Portal Toggle Button */}
+            <button 
+              onClick={() => setIsAdmin(!isAdmin)}
+              className={`p-2.5 rounded-lg border transition-all flex items-center justify-center cursor-pointer ${
+                isAdmin 
+                  ? 'bg-brand-primary text-white border-brand-primary shadow-xs' 
+                  : 'bg-white hover:bg-brand-light text-brand-dark border-brand-light'
+              }`}
+              title={isAdmin ? "Switch to Customer Mode" : "Manage Digital Menu"}
+              id="admin-mode-toggle"
+            >
+              {isAdmin ? <User className="w-4 h-4" /> : <ShieldAlert className="w-4 h-4 animate-pulse-subtle" />}
+            </button>
           </div>
         </div>
 
@@ -108,6 +123,42 @@ export default function Header() {
           <p>
             <span className="font-semibold text-brand-dark">Locate us:</span> {RESTAURANT_INFO.placeDetail}
           </p>
+        </div>
+
+        {/* Display Navigation Tabs */}
+        <div className="mt-5 pt-4 border-t border-brand-light flex items-center justify-between gap-4 flex-wrap" id="header-navigation-tabs">
+          <div className="flex gap-2.5">
+            <button
+              onClick={() => setIsAdmin(false)}
+              className={`px-4.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer ${
+                !isAdmin
+                  ? 'bg-brand-primary text-white shadow-xs'
+                  : 'bg-brand-light/35 text-brand-dark hover:bg-brand-light/70 border border-brand-light'
+              }`}
+              id="nav-customer-menu"
+            >
+              <LayoutGrid className="w-4 h-4" />
+              <span>Customer Menu</span>
+            </button>
+            <button
+              onClick={() => setIsAdmin(true)}
+              className={`px-4.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer ${
+                isAdmin
+                  ? 'bg-brand-primary text-white shadow-xs'
+                  : 'bg-brand-light/35 text-brand-dark hover:bg-brand-light/70 border border-brand-light'
+              }`}
+              id="nav-admin-dashboard"
+            >
+              <ShieldCheck className="w-4 h-4" />
+              <span>Admin Dashboard</span>
+            </button>
+          </div>
+          
+          {isAdmin && (
+            <span className="text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-md uppercase tracking-wider animate-pulse">
+              🛡️ Admin Terminal Connected
+            </span>
+          )}
         </div>
       </div>
     </header>
